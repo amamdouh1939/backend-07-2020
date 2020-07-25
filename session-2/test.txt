@@ -1,2 +1,2 @@
 Some text
-Another text from github
+Edited text from github
