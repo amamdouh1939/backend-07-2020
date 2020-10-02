@@ -18,45 +18,30 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-12 text-right p-3">
-                        <a href="{{ route('students.create') }}" class="btn btn-success">Create</a>
-                    </div>
                     <div class="col-12">
-                        <div class="card">
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <table class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th style="width: 10px">#</th>
-                                        <th>Name</th>
-                                        <th>email</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($students as $student)
-                                    <tr>
-                                        <td>{{ $student->id }}</td>
-                                        <td>{{ $student->name }}</td>
-                                        <td>
-                                            {{ $student->email }}
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-info">Show</a>
-                                            <a class="btn btn-primary">Edit</a>
-                                            <a class="btn btn-danger">Delete</a>
-                                        </td>
-                                    </tr>
-                                    @endforeach
+                        <div class="card p-2">
+                            <form action="{{ route('students.store') }}" method="post">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="name">Name:</label>
+                                            <input type="text" class="form-control" id="name" name="name">
+                                        </div>
+                                    </div>
 
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                            <div class="card-footer clearfix">
-                                {{ $students->links() }}
-                            </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email">Email:</label>
+                                            <input type="email" class="form-control" id="email" name="email">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success">Save</button>
+                                </div>
+
+                            </form>
                         </div>
                     </div>
                 </div>

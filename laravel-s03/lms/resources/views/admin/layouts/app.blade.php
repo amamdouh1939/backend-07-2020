@@ -11,21 +11,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <title>LMS | @yield('title')</title>
 
-    @include('layouts.common.css_links')
+    @include('admin.layouts.common.css_links')
 
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
 
-        @include('layouts.common.header')
+        @include('admin.layouts.common.header')
 
         @yield('content')
 
-        @include('layouts.common.footer')
+        @include('admin.layouts.common.footer')
     </div>
     <!-- ./wrapper -->
 
     <!-- REQUIRED SCRIPTS -->
-    @include('layouts.common.js_links')
+    @include('admin.layouts.common.js_links')
 </body>
 </html>
