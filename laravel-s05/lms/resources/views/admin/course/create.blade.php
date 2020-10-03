@@ -20,7 +20,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card p-2">
-                            <form action="{{ route('courses.store') }}" method="post">
+                            <form action="{{ route('courses.store') }}" method="post" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-6">
@@ -31,6 +31,20 @@
                                                    name="title" value="{{ old('title') }}">
                                             <span class="text-danger">
                                                 @error('title')
+                                                {{ $message }}
+                                                @enderror
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="title">Image:</label>
+                                            <input type="file" class="form-control"
+                                                   id="image"
+                                                   name="image">
+                                            <span class="text-danger">
+                                                @error('image')
                                                 {{ $message }}
                                                 @enderror
                                             </span>
@@ -50,17 +64,6 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="category">Category:</label>
-                                            <input type="text" class="form-control" id="category" name="category" value="{{ old('category') }}">
-                                            <span class="text-danger">
-                                                @error('category')
-                                                {{ $message }}
-                                                @enderror
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
                                             <label for="price">Price:</label>
                                             <input type="text" class="form-control" id="price" name="price" value="{{ old('price') }}">
                                             <span class="text-danger">
@@ -69,6 +72,21 @@
                                                 @enderror
                                             </span>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="category">Category:</label>
+                                        <select name="category_id" id="category" class="form-control">
+                                            @foreach($categories as $category)
+                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="text-danger">
+                                                @error('category_id')
+                                            {{ $message }}
+                                            @enderror
+                                            </span>
                                     </div>
                                 </div>
                                 <div class="text-center">

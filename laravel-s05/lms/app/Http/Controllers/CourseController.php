@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CourseStoreRequest;
+use App\Models\Category;
 use App\Models\Course;
 use Illuminate\Http\Request;
 
@@ -10,7 +12,7 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
     {
@@ -20,7 +22,15 @@ class CourseController extends Controller
                     $query->where('title', 'like', '%' . $request->query('search') . '%');
                 })
                 ->latest()
-                ->select('courses.id', 'courses.title', 'courses.description', 'courses.price')
+                ->select(
+                    'courses.id',
+                    'courses.title',
+                    'courses.description',
+                    'courses.price',
+                    'courses.category_id',
+                    'courses.image'
+                )
+                ->with(['category'])
                 ->paginate(100)
         ]);
     }
@@ -28,11 +38,13 @@ class CourseController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
     {
-        return view('admin.course.create');
+        return view('admin.course.create', [
+            'categories' => Category::all()
+        ]);
     }
 
     /**
@@ -41,8 +53,22 @@ class CourseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CourseStoreRequest $request)
     {
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $fileName = $image->getClientOriginalName();
+
+            $course = Course::create($request->all());
+
+            $uploadDir = 'uploads/courses/' . $course->id;
+            $image->move($uploadDir, $fileName);
+            $course->image = $uploadDir . '/' . $fileName;
+            $course->save();
+
+            return redirect(route('courses.index'));
+        }
+
         Course::create($request->all());
 
         return redirect(route('courses.index'));
@@ -53,7 +79,7 @@ class CourseController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Course  $course
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show(Course $course)
     {
@@ -78,11 +104,11 @@ class CourseController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Course  $course
+     * @param CourseStoreRequest $request
+     * @param \App\Models\Course $course
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Course $course)
+    public function update(CourseStoreRequest $request, Course $course)
     {
         $course->update($request->all());
         return redirect(route('courses.index'));

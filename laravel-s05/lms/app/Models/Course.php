@@ -11,7 +11,13 @@ class Course extends Model
 
     protected $fillable = [
         'title',
+        'category_id',
         'description',
         'price'
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

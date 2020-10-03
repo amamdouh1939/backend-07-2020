@@ -41,11 +41,12 @@
                                     <thead>
                                     <tr>
                                         <th style="width: 10px">#</th>
+                                        <th>Image</th>
                                         <th>title</th>
                                         <th>description</th>
                                         <th>category</th>
                                         <th>price</th>
-                                        <th></th>
+                                        <th>Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -57,18 +58,20 @@
                                         @foreach($courses as $course)
                                             <tr>
                                                 <td>{{ $course->id }}</td>
+{{--                                                <td><img style="max-width: 50px" src="{{ asset('images/no-image-icon-6.png') }}" alt=""></td>--}}
+                                                <td>
+                                                    @if ($course->image)
+                                                        <img style="max-width: 50px;" src="{{ asset($course->image) }}" alt="">
+                                                    @else
+                                                        <img style="max-width: 50px" src="{{ asset('images/no-image-icon-6.png') }}" alt="">
+                                                    @endif
+                                                </td>
                                                 <td>{{ $course->title }}</td>
                                                 <td class="w-25">
                                                     {{ $course->description }}
                                                 </td>
-                                                {{-- <td>
-                                                    @foreach($course->addresses as $address)
-                                                        <p class="alert alert-info">{{ $address->title }}</p>
-                                                    @endforeach
-                                                </td> --}}
-                                                <td>category</td>
+                                                <td><a href="{{ route('categories.show', $course->category) }}">{{ $course->category->name }}</a></td>
                                                 <td>{{ $course->price }}</td>
-
                                                 <td>
                                                     <a class="btn btn-info" href="{{ route('courses.show', $course) }}">Show</a>
                                                     <a class="btn btn-primary" href="{{ route('courses.edit', $course) }}">Edit</a>
