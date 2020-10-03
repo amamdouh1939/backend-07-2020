@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Student Create')
+@section('title', 'Student Create Address')
 
 @section('content')
     <!-- Content Wrapper. Contains page content -->
@@ -20,29 +20,23 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card p-2">
-                            <form action="{{ route('students.store') }}" method="post">
+                            <h2>Add Address for: {{ $student->name }}</h2>
+                            <ul>
+                                @foreach($student->addresses as $address)
+                                    <li>{{ $address->title }}</li>
+                                @endforeach
+                            </ul>
+                            <form action="{{ route('students.address.store', $student) }}" method="post">
                                 @csrf
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="name">Name:</label>
+                                            <label for="name">Title:</label>
                                             <input type="text" class="form-control"
-                                                   id="name"
-                                                   name="name" value="{{ old('name') }}">
+                                                   id="title"
+                                                   name="title" value="{{ old('title') }}">
                                             <span class="text-danger">
-                                                @error('name')
-                                                {{ $message }}
-                                                @enderror
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="email">Email:</label>
-                                            <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}">
-                                            <span class="text-danger">
-                                                @error('email')
+                                                @error('title')
                                                 {{ $message }}
                                                 @enderror
                                             </span>

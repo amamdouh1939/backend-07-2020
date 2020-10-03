@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StudentStore;
 use App\Models\Student;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse as RedirectResponseAlias;
@@ -15,15 +16,20 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return Factory|View
      */
-    public function index()
+    public function index(Request $request)
     {
         return view('admin.student.index', [
             'students' => Student::query()
-                // ->withTrashed() -> select all in database  // ->onlyTrashed() -> to select only deleted
+                ->when($request->query('search'), function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->query('search') . '%');
+                })
+                ->with(['addresses'])
                 ->latest()
-                ->paginate(10)
+                ->select('students.id', 'students.name', 'students.email')
+                ->paginate(100)
         ]);
     }
 
@@ -40,10 +46,10 @@ class StudentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StudentStore $request
      * @return RedirectResponseAlias|Redirector
      */
-    public function store(Request $request)
+    public function store(StudentStore $request)
     {
         Student::create($request->all());
 
@@ -54,22 +60,26 @@ class StudentController extends Controller
      * Display the specified resource.
      *
      * @param Student $student
-     * @return Response
+     * @return Factory|View
      */
     public function show(Student $student)
     {
-        //
+        return view('admin.student.show', [
+            'student' => $student
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param Student $student
-     * @return Response
+     * @return Factory|View
      */
     public function edit(Student $student)
     {
-        //
+        return view('admin.student.edit', [
+            'student' => $student
+        ]);
     }
 
     /**
@@ -81,7 +91,8 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-        //
+        $student->update($request->all());
+        return redirect(route('students.index'));
     }
 
     /**
@@ -95,6 +106,31 @@ class StudentController extends Controller
     {
         $student->delete();
 
+        return redirect(route('students.index'));
+    }
+
+//    public function search(Request $request)
+//    {
+//        return view('admin.student.index', [
+//            'students' => Student::query()
+//                ->where('name', 'like', '%' . $request->query('search') . '%')
+//                // ->withTrashed() -> select all in database  // ->onlyTrashed() -> to select only deleted
+//                ->latest()
+//                ->select('students.id', 'students.name', 'students.email')
+//                ->paginate(10)
+//        ]);
+//    }
+
+    public function addressCreate(Student $student)
+    {
+        return view('admin.student.address.create', [
+            'student' => $student
+        ]);
+    }
+
+    public function addressStore(Student $student, Request $request)
+    {
+        $student->addresses()->create($request->all());
         return redirect(route('students.index'));
     }
 }

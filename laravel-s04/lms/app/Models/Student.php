@@ -18,4 +18,9 @@ class Student extends Model
         'password',
     ];
 
+    public function addresses()
+    {
+        return $this->hasMany(Address::class, 'student_id');
+    }
+
 }
